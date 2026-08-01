@@ -4,24 +4,15 @@ I ran a real NCCL all-reduce benchmark across 2 rented A100 GPUs to measure how 
 
 **Result: forcing peer-to-peer communication off dropped average bus bandwidth from 41.86 GB/s to 4.84 GB/s, a roughly 8.6x reduction, caused by NCCL falling back from direct GPU-to-GPU memory access to routing through host memory.**
 
+
+
 ## Why I built this
 
 Communication cost is one of the least visible bottlenecks in distributed training. A GPU can look fully utilized while the real limiter is how fast it can exchange data with other GPUs, not how fast it can compute. I wanted hands on evidence of what a communication regression actually looks like, not just a description of ring versus tree all-reduce, so I rented real multi-GPU hardware and measured it directly.
 
 ## Architecture
 
-```
-2x NVIDIA A100 SXM4-80GB (single node, RunPod)
-       |
-       v
-NCCL 2.25.1          — collective communication library, detects GPU topology and selects a communication path
-       |
-       v
-nccl-tests           — official NVIDIA benchmark suite, drives NCCL through a controlled all-reduce workload
-       |
-       v
-NCCL_DEBUG=INFO logs — captures NCCL's actual topology detection and path selection, not just the final numbers
-```
+![NNL benchmark architecture](assets/nccl_benchmark_architecture.png)
 
 I used `all_reduce_perf` specifically because all-reduce is the collective operation most directly tied to distributed training, it is what synchronizes gradients across GPUs after each backward pass.
 
