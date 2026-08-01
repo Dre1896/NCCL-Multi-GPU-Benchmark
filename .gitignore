@@ -1,0 +1,6 @@
+*.nsys-rep
+*.ncu-rep
+*.log
+!healthy_run.log
+!degraded_run.log
+.env
