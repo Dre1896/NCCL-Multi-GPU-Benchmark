@@ -1,4 +1,7 @@
 # NCCL Multi-GPU Communication Benchmark
+<h1 align="center">
+<img src="assets/banner.png">
+</h1> 
 
 I ran a real NCCL all-reduce benchmark across 2 rented A100 GPUs to measure how GPU-to-GPU communication actually behaves under a healthy interconnect versus a deliberately degraded one. This project documents the full process: setting up a multi-GPU environment, running a standard NCCL benchmark suite, and proving a real, measurable communication regression with the exact mechanism behind it.
 
